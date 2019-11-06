@@ -67,12 +67,13 @@ def run_tests(fileLocation):
     # Runs unittest and outputs into buf
     suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
     with StringIO() as buf:
-        with redirect_stdout(buf):
-            unittest.TextTestRunner(stream=buf).run(suite)
-        test_output = buf.getvalue()
-        print (test_output)
-        didnt_run = re.compile("Ran 0 test.*")
-        all_tests = didnt_run.findall(test_output)
+        if (not failed_patch):
+            with redirect_stdout(buf):
+                unittest.TextTestRunner(stream=buf).run(suite)
+            test_output = buf.getvalue()
+            print (test_output)
+            didnt_run = re.compile("Ran 0 test.*")
+            all_tests = didnt_run.findall(test_output)
         if (failed_patch):
             tests_failed = ['FAIL. Failed to apply patch']
         elif (len(all_tests) > 0):
