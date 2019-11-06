@@ -1,5 +1,4 @@
 """
-
 InsideSherpa.com - Flask Testing Template
 
 Description:
@@ -7,11 +6,10 @@ Description:
 
 Task:
 - Implement a test that downloads the provided git patch file
-
 """
 
 from flask import Flask, request, jsonify
-from io import BytesIO as StringIO
+from io import StringIO
 import json
 import sys
 import re
@@ -44,9 +42,9 @@ def run_tests(fileLocation):
     tests_failed = []
     import __main__
     os.chdir('/tmp')
-    git_dir = 'JPMC-tech-task-1'
+    git_dir = 'JPMC-tech-task-1-PY3'
     random_num = random.randint(100000, 1000000)
-    git_url = 'https://github.com/insidesherpa/JPMC-tech-task-1.git'
+    git_url = 'https://github.com/insidesherpa/JPMC-tech-task-1-PY3.git'
     # Git clone into custom directory and apply patch file
     new_repo_path = "%s/%s/taskDir" % (os.getcwd(), random_num)
     if not os.path.exists(new_repo_path):
@@ -57,6 +55,10 @@ def run_tests(fileLocation):
         repo_path = '%s/%s/taskDir/%s' % (os.getcwd(), random_num, git_dir)
         os.chdir(repo_path)
         git.exec_command('apply', '/tmp/test_file.patch', cwd=os.getcwd())
+    else:
+        repo_path = '%s/%s/taskDir/%s' % (os.getcwd(), random_num, git_dir)
+        os.chdir(repo_path)
+        
 
     # Runs unittest and outputs into buf
     suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
