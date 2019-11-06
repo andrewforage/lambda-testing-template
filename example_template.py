@@ -41,6 +41,7 @@ into /tmp/<randomNumber>/taskDir and then apply the git patch file located at /t
 def run_tests(fileLocation):
     tests_failed = []
     import __main__
+    failed_patch = False
     os.chdir('/tmp')
     git_dir = 'JPMC-tech-task-1-PY3'
     random_num = random.randint(100000, 1000000)
@@ -54,7 +55,10 @@ def run_tests(fileLocation):
         print (git_output)
         repo_path = '%s/%s/taskDir/%s' % (os.getcwd(), random_num, git_dir)
         os.chdir(repo_path)
-        git.exec_command('apply', '/tmp/test_file.patch', cwd=os.getcwd())
+        try:
+            output = git.exec_command('apply', '/tmp/test_2.patch', cwd=os.getcwd())
+        except Exception as error:
+            failed_patch = True
     else:
         repo_path = '%s/%s/taskDir/%s' % (os.getcwd(), random_num, git_dir)
         os.chdir(repo_path)
@@ -69,7 +73,9 @@ def run_tests(fileLocation):
         print (test_output)
         didnt_run = re.compile("Ran 0 test.*")
         all_tests = didnt_run.findall(test_output)
-        if (len(all_tests) > 0):
+        if (failed_patch):
+            tests_failed = ['FAIL. Failed to apply patch']
+        elif (len(all_tests) > 0):
             tests_failed = all_tests
         else:
             # Find all fail tests using Regex and return as an array
