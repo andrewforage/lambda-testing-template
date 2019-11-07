@@ -2,10 +2,7 @@
 InsideSherpa.com - Flask Testing Template
 
 Description:
-- This template creates a Flask app to perform a basic test
-
-Task:
-- Implement a test that downloads the provided git patch file
+- This template creates a Flask app to perform a basic test and return results in a Python dictionary in console
 """
 
 from flask import Flask, request, jsonify
