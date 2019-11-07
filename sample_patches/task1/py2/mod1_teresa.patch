@@ -1,0 +1,59 @@
+From fd5a9abd7560366461d305f11bb569fcdb73f41c Mon Sep 17 00:00:00 2001
+From: Theresa Nguyen <theresanguyen@Theresas-MacBook-Pro.local>
+Date: Wed, 16 Oct 2019 11:35:08 -0700
+Subject: [PATCH] "updated functions"
+
+---
+ client.py  |   4 ++--
+ client.pyc | Bin 0 -> 1275 bytes
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+ create mode 100644 client.pyc
+
+diff --git a/client.py b/client.py
+index 40badcd..1b96b49 100644
+--- a/client.py
++++ b/client.py
+@@ -35,14 +35,14 @@ def getDataPoint(quote):
+ 	stock = quote['stock']
+ 	bid_price = float(quote['top_bid']['price'])
+ 	ask_price = float(quote['top_ask']['price'])
+-	price = bid_price
++	price = (bid_price + ask_price)/2
+ 	return stock, bid_price, ask_price, price
+ 
+ def getRatio(price_a, price_b):
+ 	""" Get ratio of price_a and price_b """
+ 	""" ------------- Update this function ------------- """
+ 	""" Also create some unit tests for this function in client_test.py """
+-	return 1
++	return price_a/price_b
+ 
+ # Main
+ if __name__ == "__main__":
+diff --git a/client.pyc b/client.pyc
+new file mode 100644
+index 0000000000000000000000000000000000000000..eb3b8ffd039414fe38822a547521a7edab7ebf24
+GIT binary patch
+literal 1275
+zcmbVLOK;Oa5FS68Hhn)*pc01#3E@fv7r0cVJfs#CAyKudstSwBINnL()Ui|V2DKtR
+zm7l;L;Kc7kz!_#XNkJTId&V=LXJ+SR=f}+C=7(>`F$}M9dcP!6zlceCEJy)@E7^j;
+z8sRns_DFUha6l5`f+Tqiqzj+Pu>^9=2;+bgAWLv!L-8HXz5td1$KcX}?c+-bCIM||
+zPXPk7rvY7P&j32mcHk1&h@STBP!8tc>?z<Jc|L()9<T&B&lc}p2o@k%gkTAR3P?J0
+z0dNs;39teU7jEplKK%+uasrUPRrtBI4cdgG%v5{em8tUNH(k5x4v8(TyBofr=5ds^
+za-}!c*Vfnk(;gP*FB19e(?#;r0*HxVjL0S0B2s(A`X=Pcg#~(`*swzFS)p7n>=EYv
+z#T@9{(0AY_HEsFAg}yZe`Yxw`;FUP?1~IW$<gyo|h|*N#4WU~oGDL||e2mf_Dxq`H
+z#0-l_laY{-j=Fi0X`wkwrStei^RRW^4eN<CXtzjWyh0;&lGtS7acSmzBh4f2vA<DI
+zd%4CMX`s1h6eS!)V2!*7TFt~@E03A-iTQ^L3*}SN1*#}(_RcZ$-|W5Js%nf|RZY&-
+zM}C|pnCXYzb3IKyP1M^|#GWaF15FYGXVR+BJ!{2$%!teYCJ3MbP!E?6ObzNTAz}x$
+zpr#}_x6R}mMk31OP_7G;rpKX7D~2Zj$n}8*8C<U#PK>IlaT2Q>gwFz3GaiPWD9OT5
+z-6v(A8!W{=B_b_6>hH!q^*~T_%-bYJ(yC%d6OBy0Wl~JCy&_GM`eV%-sgn*Gp{?>v
+z^A;6Ua^5j>+&_F(d#8EIyEPMPiaiF|WKjph(0H7Y3#H9=q4A?_kZN>P-lbV_;6`3_
+zB5e*UFp>r{o1$vGIc8sKY*^#<`)@lug0A1x%?|w&DL&^GsN2M*Ept01r(~DQ<?(4}
+N$*MXt)-7wr{sS*I5{Uo+
+
+literal 0
+HcmV?d00001
+
+-- 
+2.22.0
+

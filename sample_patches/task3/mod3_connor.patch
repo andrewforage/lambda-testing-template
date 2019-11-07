@@ -1,0 +1,133 @@
+From 427693be3026c763d7f015eb5b16e5dc0bdb1203 Mon Sep 17 00:00:00 2001
+From: Connor Clarkson <connor.sqidge@hotmail.co.uk>
+Date: Mon, 4 Nov 2019 21:14:24 +0000
+Subject: [PATCH] Completed Task 3.
+
+---
+ .gitignore             |  3 +++
+ src/DataManipulator.ts | 37 +++++++++++++++++++++++++------------
+ src/Graph.tsx          | 30 ++++++++++++++++++------------
+ 3 files changed, 46 insertions(+), 24 deletions(-)
+
+diff --git a/.gitignore b/.gitignore
+index 4d29575..fd13bcb 100755
+--- a/.gitignore
++++ b/.gitignore
+@@ -21,3 +21,6 @@
+ npm-debug.log*
+ yarn-debug.log*
+ yarn-error.log*
++
++
++./idea
+\ No newline at end of file
+diff --git a/src/DataManipulator.ts b/src/DataManipulator.ts
+index f6b15ff..81fb094 100644
+--- a/src/DataManipulator.ts
++++ b/src/DataManipulator.ts
+@@ -1,20 +1,33 @@
+ import { ServerRespond } from './DataStreamer';
+ 
+ export interface Row {
+-  stock: string,
+-  top_ask_price: number,
++  price_abc: number,
++  price_def: number,
++  ratio: number,
+   timestamp: Date,
++  upper_bound: number,
++  lower_bound: number,
++  trigger_alert: number | undefined,
+ }
+ 
+ 
+ export class DataManipulator {
+-  static generateRow(serverResponds: ServerRespond[]): Row[] {
+-    return serverResponds.map((el: any) => {
+-      return {
+-        stock: el.stock,
+-        top_ask_price: el.top_ask && el.top_ask.price || 0,
+-        timestamp: el.timestamp,
+-      };
+-    })
+-  }
+-}
++  static generateRow(serverResponds: ServerRespond[]): Row {
++    const priceABC = (serverResponds[0].top_ask.price + serverResponds[0].top_bid.price) /2;
++    const priceDEF = (serverResponds[1].top_ask.price + serverResponds[1].top_bid.price) /2;
++    const ratio = priceABC / priceDEF;
++    const upperBound = 1 + 0.05;
++    const lowerBound = 1 - 0.05;
++
++    return {
++        price_abc: priceABC,
++        price_def: priceDEF,
++        ratio,
++        timestamp: serverResponds[0].timestamp > serverResponds[1].timestamp ? serverResponds[0].timestamp : serverResponds[1].timestamp,
++        upper_bound: upperBound,
++        lower_bound: lowerBound,
++        trigger_alert: (ratio > upperBound || ratio < lowerBound) ? ratio : undefined,
++    };
++    }
++ }
++
+diff --git a/src/Graph.tsx b/src/Graph.tsx
+index 58fb997..05ac879 100644
+--- a/src/Graph.tsx
++++ b/src/Graph.tsx
+@@ -23,10 +23,13 @@ class Graph extends Component<IProps, {}> {
+     const elem = document.getElementsByTagName('perspective-viewer')[0] as unknown as PerspectiveViewerElement;
+ 
+     const schema = {
+-      stock: 'string',
+-      top_ask_price: 'float',
+-      top_bid_price: 'float',
++      price_abc: 'float',
++      price_def: 'float',
++      ratio: 'float',
+       timestamp: 'date',
++      upper_bound: 'float',
++      lower_bound: 'float',
++      trigger_alert: 'float',
+     };
+ 
+     if (window.perspective && window.perspective.worker()) {
+@@ -36,23 +39,26 @@ class Graph extends Component<IProps, {}> {
+       // Load the `table` in the `<perspective-viewer>` DOM reference.
+       elem.load(this.table);
+       elem.setAttribute('view', 'y_line');
+-      elem.setAttribute('column-pivots', '["stock"]');
+       elem.setAttribute('row-pivots', '["timestamp"]');
+-      elem.setAttribute('columns', '["top_ask_price"]');
++      elem.setAttribute('columns', '["ratio", "lower_bound", "upper_bound", "trigger_alert"]');
+       elem.setAttribute('aggregates', JSON.stringify({
+-        stock: 'distinctcount',
+-        top_ask_price: 'avg',
+-        top_bid_price: 'avg',
+-        timestamp: 'distinct count',
+-      }));
++          price_abc: 'avg',
++          price_def: 'avg',
++          ratio: 'avg',
++          timestamp: 'distinct count',
++          upper_bound: 'avg',
++          lower_bound: 'avg',
++          trigger_alert:'avg',
++      })
++      );
+     }
+   }
+ 
+   componentDidUpdate() {
+     if (this.table) {
+-      this.table.update(
++      this.table.update([
+         DataManipulator.generateRow(this.props.data),
+-      );
++      ]);
+     }
+   }
+ }
+-- 
+2.21.0 (Apple Git-122.2)
+

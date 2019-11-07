@@ -1,0 +1,151 @@
+
+diff --git a/src/App.tsx b/src/App.tsx
+index 0728518..7b85207 100755
+--- a/src/App.tsx
++++ b/src/App.tsx
+@@ -29,46 +29,52 @@ class App extends Component<{}, IState> {
+    * Render Graph react component with state.data parse as property data
+    */
+   renderGraph() {
+-    return (<Graph data={this.state.data}/>)
++    return (<Graph data={this.state.data} />)
+   }
+ 
+   /**
+    * Get new data from server and update the state with the new data
+    */
+   getDataFromServer() {
++    console.log("HI");
+     DataStreamer.getData((serverResponds: ServerRespond[]) => {
+       // Update the state by creating a new array of data that consists of
+       // Previous data in the state and the new data from server
+-      this.setState({ data: [...this.state.data, ...serverResponds] });
+-    });
+-  }
++      this.setState({ data: [...serverResponds] });
++      setTimeout(() => {
++        this.getDataFromServer();
++      }, 100);
++  });
+ 
+-  /**
+-   * Render the App react component
+-   */
+-  render() {
+-    return (
+-      <div className="App">
+-        <header className="App-header">
+-          Bank & Merge Co Task 2
++}
++
++/**
++ * Render the App react component
++ */
++render() {
++  return (
++    <div className="App">
++      <header className="App-header">
++        Bank & Merge Co Task 2
+         </header>
+-        <div className="App-content">
+-          <button className="btn btn-primary Stream-button"
+-            // when button is click, our react app tries to request
+-            // new data from the server.
+-            // As part of your task, update the getDataFromServer() function
+-            // to keep requesting the data every 100ms until the app is closed
+-            // or the server does not return anymore data.
+-            onClick={() => {this.getDataFromServer()}}>
+-            Start Streaming Data
++      <div className="App-content">
++        <button className="btn btn-primary Stream-button"
++          // when button is click, our react app tries to request
++          // new data from the server.
++          // As part of your task, update the getDataFromServer() function
++          // to keep requesting the data every 100ms until the app is closed
++          // or the server does not return anymore data.
++          onClick={() => { this.getDataFromServer();
++             }}>
++          Start Streaming Data
+           </button>
+-          <div className="Graph">
+-            {this.renderGraph()}
+-          </div>
++        <div className="Graph">
++          {this.renderGraph()}
+         </div>
+       </div>
+-    )
+-  }
++    </div>
++  )
++}
+ }
+ 
+ export default App;
+diff --git a/src/DataStreamer.ts b/src/DataStreamer.ts
+index 78583cb..36761c5 100644
+--- a/src/DataStreamer.ts
++++ b/src/DataStreamer.ts
+@@ -23,6 +23,8 @@ class DataStreamer {
+    */
+   static getData(callback: (data: ServerRespond[]) => void): void {
+     const request = new XMLHttpRequest();
++
++
+     request.open('GET', DataStreamer.API_URL, false);
+ 
+     request.onload = () => {
+@@ -32,8 +34,12 @@ class DataStreamer {
+         alert ('Request failed');
+       }
+     }
+-
+-    request.send();
++    try{
++      request.send();
++    }catch(e){
++      window.alert("no more data.");
++    }
++    
+   }
+ }
+ 
+diff --git a/src/Graph.tsx b/src/Graph.tsx
+index ec1430e..dc4824a 100644
+--- a/src/Graph.tsx
++++ b/src/Graph.tsx
+@@ -27,12 +27,13 @@ class Graph extends Component<IProps, {}> {
+   table: Table | undefined;
+ 
+   render() {
+-    return React.createElement('perspective-viewer');
++    return React.createElement('perspective-viewer',{"view":"y_line", "columns":'["top_ask_price"]',"row-pivots":'["timestamp"]',"column-pivots":'["stock"]'});
+   }
+ 
+   componentDidMount() {
+     // Get element to attach the table from the DOM.
+     const elem: PerspectiveViewerElement = document.getElementsByTagName('perspective-viewer')[0] as unknown as PerspectiveViewerElement;
++    
+ 
+     const schema = {
+       stock: 'string',
+@@ -41,14 +42,19 @@ class Graph extends Component<IProps, {}> {
+       timestamp: 'date',
+     };
+ 
++   
++
+     if (window.perspective && window.perspective.worker()) {
+       this.table = window.perspective.worker().table(schema);
+     }
+     if (this.table) {
+       // Load the `table` in the `<perspective-viewer>` DOM reference.
+-
++   
+       // Add more Perspective configurations here.
++      
+       elem.load(this.table);
++      
++      
+     }
+   }
