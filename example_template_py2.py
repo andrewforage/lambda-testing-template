@@ -56,7 +56,7 @@ def run_tests(fileLocation):
         repo_path = '%s/%s/taskDir/%s' % (os.getcwd(), random_num, git_dir)
         os.chdir(repo_path)
         try:
-            output = git.exec_command('apply', '/tmp/test_2.patch', cwd=os.getcwd())
+            output = git.exec_command('apply', '/tmp/test_file.patch', cwd=os.getcwd())
         except Exception as error:
             failed_patch = True
     else:

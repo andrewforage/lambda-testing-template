@@ -3,6 +3,8 @@ InsideSherpa.com - Flask Testing Template
 
 Description:
 - This template creates a Flask app to perform a basic test and return results in a Python dictionary in console
+
+This test checks whether that submitted patch file has comments
 """
 
 from flask import Flask, request, jsonify
@@ -28,7 +30,7 @@ lambda_api_key = 'testing'
 class TestPatchFile(unittest.TestCase):
     def test_has_comments(self):
         print ("running test_has_comments")
-        output = subprocess.Popen(['cat', patch_path],
+        output = subprocess.Popen(['cat', '/tmp/test_file.patch'],
                                   cwd=os.getcwd(),
                                   stdout=subprocess.PIPE,
                                   stderr=subprocess.STDOUT)
@@ -61,9 +63,9 @@ def run_tests(fileLocation):
     import __main__
     failed_patch = False
     os.chdir('/tmp')
-    git_dir = 'JPMC-tech-task-1-PY3'
+    git_dir = 'JPMC-tech-task-1'
     random_num = random.randint(100000, 1000000)
-    git_url = 'https://github.com/insidesherpa/JPMC-tech-task-1-PY3.git'
+    git_url = 'https://github.com/insidesherpa/JPMC-tech-task-1.git'
     # Git clone into custom directory and apply patch file
     new_repo_path = "%s/%s/taskDir" % (os.getcwd(), random_num)
     if not os.path.exists(new_repo_path):
@@ -74,7 +76,7 @@ def run_tests(fileLocation):
         repo_path = '%s/%s/taskDir/%s' % (os.getcwd(), random_num, git_dir)
         os.chdir(repo_path)
         try:
-            output = git.exec_command('apply', '/tmp/test_2.patch', cwd=os.getcwd())
+            output = git.exec_command('apply', '/tmp/test_file.patch', cwd=os.getcwd())
         except Exception as error:
             failed_patch = True
     else:
