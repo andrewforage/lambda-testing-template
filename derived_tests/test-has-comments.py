@@ -8,7 +8,7 @@ This test checks whether that submitted patch file has comments
 """
 
 from flask import Flask, request, jsonify
-from io import StringIO
+from io import BytesIO as StringIO
 import json
 import sys
 import re
@@ -41,11 +41,13 @@ class TestPatchFile(unittest.TestCase):
         existing_comments = []
         unique_comments = []
         for text in lines:
+            print (text)
             if len(text.strip()) and text[0] == '-':
                 if '#' in text or '"""' in text:
                     existing_comments.append(text.replace('-', '', 1).strip())
         #check for new/unique comments
         for text in lines:
+            print (text)
             if len(text.strip()) and text[0] == '+':
                 if '#' in text or '"""' in text:
                     if text.replace('+', '', 1).strip() not in existing_comments:
