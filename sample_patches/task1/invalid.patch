@@ -1,0 +1,76 @@
+diff --git a/client.py b/client.py
+index 2d22dd4..058b726 100644
+--- a/client.py
++++ b/client.py
+@@ -23,6 +23,7 @@ import time
+ import json
+ import random
+ 
++
+ # Server API URLs
+ QUERY = "http://localhost:8080/query?id={}"
+ 
+@@ -31,28 +32,50 @@ N = 100
+ 
+ prev_bid_price = 0
+ prev_ask_price = 0
++prev_price = 0
+ 
+ def getDataPoint(quote):
+ 	""" Produce all of the needed values to generate a datapoint """
+ 	""" ------------- Update this function ------------- """
++
+ 	global prev_bid_price
+ 	global prev_ask_price
+ 	stock = quote['stock']
++
+ 	bid_price = 0
+ 	bid_price_avg = 0
+ 	ask_price = 0
+ 	ask_price_avg = 0
++	#declare ratios
++	ratio = 1	
++	bid_ratio = 0
++	ask_ratio = 0
+ 
+ 	if quote['top_bid']:
+ 		bid_price = float(quote['top_bid']['price'])
++		# get bid ratio if a previous bid price exists
++		if prev_bid_price > 0:
++			bid_ratio = bid_price / prev_bid_price
++			print("Bid Ratio: %s" %bid_ratio)
+ 		bid_price_avg = (bid_price + prev_bid_price)/ 2
+ 		prev_bid_price = bid_price
+ 
+ 	if quote['top_ask']:
+ 		ask_price = float(quote['top_ask']['price'])
++		# get ask ratio if a previous ask price exists
++		if prev_ask_price > 0:
++			ask_ratio = ask_price / prev_ask_price
++			print("Ask Ratio: %s" % ask_ratio)
+ 		ask_price_avg = (ask_price + prev_ask_price)/ 2
+ 		prev_ask_price = ask_price
+-	return stock, bid_price, bid_price_avg, ask_price, ask_price_avg
++
++	# creat a ratio of bid/ask if both exist
++	if bid_ratio > 0 and ask_ratio > 0:
++		ratio = bid_ratio / ask_ratio
++		print("Bid/Ask Ratio: %s" % ratio)
++
++	#return ratio 
++	return stock, ratio, bid_price, bid_price_avg, ask_price, ask_price_avg
+ 
+ # Main
+ if __name__ == "__main__":
+@@ -60,7 +83,7 @@ if __name__ == "__main__":
+ 	# Query the price once every N seconds.
+ 	for _ in xrange(N):
+ 		quotes = json.loads(urllib2.urlopen(QUERY.format(random.random())).read())
+-
+ 		for quote in quotes:
+-			stock, bid_price, bid_price_avg, ask_price, ask_price_avg = getDataPoint(quote)
+-			print "Quoted %s at (bid:%s, avg bid:%s, ask:%s, avg ask:%s)" % (stock, bid_price, bid_price_avg, ask_price, ask_price_avg)
++			stock, ratio, bid_price, bid_price_avg, ask_price, ask_price_avg = getDataPoint(quote)
++			print "Quoted %s at (ratio: %s, bid:%s, avg bid:%s, ask:%s, avg ask:%s)" % (stock, ratio, bid_price, bid_price_avg, ask_price, ask_price_avg)
++			
+\ No newline at end of file
