@@ -1,0 +1,71 @@
+From ee9aef24c15e727eac5a297b52b1f52429a23211 Mon Sep 17 00:00:00 2001
+From: Sasiliyu Adetunji <sasil.adetunji@gmail.com>
+Date: Mon, 4 Nov 2019 21:17:23 +0100
+Subject: [PATCH] refactor the scripts for edge cases
+
+---
+ client.py      |  9 ++++++---
+ client_test.py | 14 ++++++++++++++
+ 2 files changed, 20 insertions(+), 3 deletions(-)
+
+diff --git a/client.py b/client.py
+index 5bd482e..1af461e 100644
+--- a/client.py
++++ b/client.py
+@@ -39,6 +39,9 @@ def getDataPoint(quote):
+
+ def getRatio(price_a, price_b):
+ 	""" Get ratio of price_a and price_b """
++	if (price_b == 0):
++		# when price_b is 0 avoid throwing ZeroDivisionError
++		return
+ 	return price_a / price_b
+
+ # Main
+@@ -47,10 +50,10 @@ if __name__ == "__main__":
+ 	# Query the price once every N seconds.
+ 	for _ in xrange(N):
+ 		quotes = json.loads(urllib2.urlopen(QUERY.format(random.random())).read())
+-		prices = []
++		prices = {}
+ 		for quote in quotes:
+ 			stock, bid_price, ask_price, price = getDataPoint(quote)
++			prices[stock] = price
+ 			print "Quoted %s at (bid:%s, ask:%s, price:%s)" % (stock, bid_price, ask_price, price)
+-			prices.append(price)
+
+-		print "Ratio %s" % getRatio(prices[0], prices[1])
++		print "Ratio %s" % getRatio(prices['ABC'], prices['DEF'])
+diff --git a/client_test.py b/client_test.py
+index 441d453..070d65c 100644
+--- a/client_test.py
++++ b/client_test.py
+@@ -28,6 +28,20 @@ class ClientTest(unittest.TestCase):
+     price_b = 121.68
+     self.assertEqual(getRatio(price_a, price_b), price_a/price_b)
+
++  // def test_getRatio_priceBZero(self):
++    price_a = 119.2
++    price_b = 0
++    self.assertIsNone(getRatio(price_a, price_b))
++
++  // def test_getRatio_priceAZero(self):
++    price_a = 0
++    price_b = 121.68
++    self.assertEqual(getRatio(price_a, price_b), 0)
++
++  <!--def test_getRatio_SamePrice(self):
++    price_a = 356.48
++    price_b = 356.48
++    self.assertEqual(getRatio(price_a, price_b), 1)-->
+
++  <!--def test_getRatio_SamePrice(self):
++    price_a = 356.48
++    price_b = 356.48
++    self.assertEqual(getRatio(price_a, price_b), 1)
++    -->
+
+ if __name__ == '__main__':
+     unittest.main()
+--
+2.20.1 (Apple Git-117)

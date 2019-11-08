@@ -2,7 +2,16 @@
 Copy a file as /tmp/test_file.patch
 
 Example:
+python utils/cp_patch.py sample_patches/task1/py2/mod1_yosh.patch
 python utils/cp_patch.py sample_patches/task1/py3/mod1_calvin.patch
+
+python utils/cp_patch.py sample_patches/task2/mod2_anish.patch
+python utils/cp_patch.py sample_patches/task2/solution2.patch
+
+python utils/cp_patch.py sample_patches/task3/mod3_connor.patch
+python utils/cp_patch.py sample_patches/task3/mod3_azim.patch
+python utils/cp_patch.py sample_patches/task3/mod3_sasilyu.patch
+python utils/cp_patch.py sample_patches/task3/mod3_sebastian.patch
 
 """
 

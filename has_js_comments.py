@@ -3,12 +3,10 @@ InsideSherpa.com - Flask Testing Template
 
 Description:
 - This template creates a Flask app to perform a basic test and return results in a Python dictionary in console
-
-This test checks whether that submitted patch file has comments
 """
 
 from flask import Flask, request, jsonify
-from io import BytesIO as StringIO
+from io import StringIO
 import json
 import sys
 import re
@@ -28,60 +26,95 @@ lambda_api_key = 'testing'
 
 # Write your Python unit test here
 class TestPatchFile(unittest.TestCase):
-    def test_has_comments(self):
-        print ("running test_has_comments")
-        output = subprocess.Popen(['cat', '/tmp/test_file.patch'],
-                                  cwd=os.getcwd(),
-                                  stdout=subprocess.PIPE,
-                                  stderr=subprocess.STDOUT)
-        output.wait()
-        buffer = output.stdout
-        lines = buffer.readlines()
-        #find existing comments first
-        existing_comments = []
-        unique_comments = []
-        for text in lines:
-            print (text)
-            if len(text.strip()) and text[0] == '-':
-                if '#' in text or '"""' in text:
-                    existing_comments.append(text.replace('-', '', 1).strip())
-        #check for new/unique comments
-        for text in lines:
-            print(text)
-            if len(text.strip()) and text[0] == '+':
-                if '#' in text or '"""' in text:
-                    if text.replace('+', '', 1).strip() not in existing_comments:
-                        unique_comments.append(text.replace('+', '', 1).strip())
-        print("unique comments contain...")
-        print(unique_comments)
-        self.assertTrue(len(unique_comments) > 0)
-    def test_has_js_comments(self):
-        print ("running test_has_comments")
-        output = subprocess.Popen(['cat', '/tmp/test_file.patch'],
-                                  cwd=os.getcwd(),
-                                  stdout=subprocess.PIPE,
-                                  stderr=subprocess.STDOUT)
-        output.wait()
-        buffer = output.stdout
-        lines = buffer.readlines()
-        #find existing comments first
-        existing_comments = []
-        unique_comments = []
-        for text in lines:
-            print (text)
-            if len(text.strip()) and text[0] == '-':
-                if '#' in text or '"""' in text:
-                    existing_comments.append(text.replace('-', '', 1).strip())
-        #check for new/unique comments
-        for text in lines:
-            print(text)
-            if len(text.strip()) and text[0] == '+':
-                if '#' in text or '"""' in text:
-                    if text.replace('+', '', 1).strip() not in existing_comments:
-                        unique_comments.append(text.replace('+', '', 1).strip())
-        print("unique comments contain...")
-        print(unique_comments)
-        self.assertTrue(len(unique_comments) > 0)
+    def test_general(self):
+        print("Running is_patch_valid!!!")
+        ## Replace later to make it general
+        # PATCH_PATH = "/tmp/test_file.patch"
+                # try:
+                #     if PATCH_PATH.endswith(".patch"):
+                #
+                #         ## Load patch
+                #         output = subprocess.Popen(['cat', PATCH_PATH], cwd=os.getcwd(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+                #         output.wait()
+                #         buffer = output.stdout
+                #         lines = buffer.readlines()
+                #
+                #
+                #         ## Clean text
+                #         ### Convert to clean strings
+                #         lines = [x.decode("utf-8").strip() for x in lines]
+                #
+                #
+                #         ### Remove empty lines
+                #         lines = [x for x in lines if x!=""]
+                #
+                #
+                #         ## Example: Valid header
+                #         """
+                #         From 92338535dbd92626397ad8a27c24a4b1ebf4ca94 Mon Sep 17 00:00:00 2001
+                #         From: Calvin Pang <calvinpang195@gmail.com>
+                #         Date: Thu, 31 Oct 2019 17:22:19 +0000
+                #         Subject: [PATCH] INIT
+                #
+                #         ---
+                #          client3.py | 31 +++++++++++++++----------------
+                #          1 file changed, 15 insertions(+), 16 deletions(-)
+                #         """
+                #
+                #
+                #         ## Check if the patch follows the same format
+                #         valid = lines[0].startswith("From ")
+                #         valid = valid & lines[1].startswith("From: ")
+                #         valid = valid & lines[2].startswith("Date: ")
+                #         valid = valid & lines[3].startswith("Subject: ")
+                #
+                #
+                #         ### Check whether diff exists and if its location is valid
+                #         start_of_diff = -1
+                #         for i in range(len(lines)):
+                #             if start_of_diff == -1:
+                #                 if lines[i].startswith("diff "):
+                #                     start_of_diff = i
+                #         valid = valid & (start_of_diff > 4)
+                #
+                #
+                #         ### Check if the line containing "x file/s changed,..." exists
+                #         ln_num__num_files_changed = -1
+                #         for i in range(len(lines)):
+                #             if "files changed" in lines[i] or "file changed" in lines[i]:
+                #                 ln_num__num_files_changed = i
+                #         valid = valid & (ln_num__num_files_changed < start_of_diff)
+                #
+                #
+                #         ## Example: Valid footers
+                #         """
+                #         --
+                #         2.11.0
+                #         """
+                #         """
+                #         --
+                #         2.20.1 (Apple Git-117)
+                #         """
+                #         """
+                #         --
+                #         2.24.0.windows.1
+                #         """
+                #
+                #         ## Check if the git version of the patch is valid
+                #         valid = valid & (lines[-1].count(".") >= 2)
+                #
+                #         ## Return result
+                #         print("is_patch_valid: Passed")
+                #         self.assertTrue(valid)
+                #     else:
+                #         print("is_patch_valid: Failed")
+                #         self.assertTrue(False)
+                # except:
+                #     print("is_patch_valid: Failed")
+                #     # self.assertTrue(False)
+        self.assertTrue(True)
+
+
 
 """
 This will clone the repository: https://github.com/insidesherpa/JPMC-tech-task-1.git
@@ -92,9 +125,9 @@ def run_tests(fileLocation):
     import __main__
     failed_patch = False
     os.chdir('/tmp')
-    git_dir = 'JPMC-tech-task-1'
+    git_dir = 'JPMC-tech-task-1-PY3'
     random_num = random.randint(100000, 1000000)
-    git_url = 'https://github.com/insidesherpa/JPMC-tech-task-1.git'
+    git_url = 'https://github.com/insidesherpa/JPMC-tech-task-1-PY3.git'
     # Git clone into custom directory and apply patch file
     new_repo_path = "%s/%s/taskDir" % (os.getcwd(), random_num)
     if not os.path.exists(new_repo_path):
