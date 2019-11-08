@@ -109,10 +109,10 @@ class TestPatchFile(unittest.TestCase):
                 self.assertTrue(valid)
             else:
                 print("is_patch_valid: Failed")
-                self.assertTrue(False)
+                self.assertFalse(True)
         except:
             print("is_patch_valid: Failed")
-            self.assertTrue(False)
+            self.assertFalse(True)
 
 
 
