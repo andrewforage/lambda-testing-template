@@ -47,13 +47,40 @@ class TestPatchFile(unittest.TestCase):
                     existing_comments.append(text.replace('-', '', 1).strip())
         #check for new/unique comments
         for text in lines:
-            print (text)
+            print(text)
             if len(text.strip()) and text[0] == '+':
                 if '#' in text or '"""' in text:
                     if text.replace('+', '', 1).strip() not in existing_comments:
                         unique_comments.append(text.replace('+', '', 1).strip())
-        print ("unique comments contain...")
-        print (unique_comments)
+        print("unique comments contain...")
+        print(unique_comments)
+        self.assertTrue(len(unique_comments) > 0)
+    def test_has_js_comments(self):
+        print ("running test_has_comments")
+        output = subprocess.Popen(['cat', '/tmp/test_file.patch'],
+                                  cwd=os.getcwd(),
+                                  stdout=subprocess.PIPE,
+                                  stderr=subprocess.STDOUT)
+        output.wait()
+        buffer = output.stdout
+        lines = buffer.readlines()
+        #find existing comments first
+        existing_comments = []
+        unique_comments = []
+        for text in lines:
+            print (text)
+            if len(text.strip()) and text[0] == '-':
+                if '#' in text or '"""' in text:
+                    existing_comments.append(text.replace('-', '', 1).strip())
+        #check for new/unique comments
+        for text in lines:
+            print(text)
+            if len(text.strip()) and text[0] == '+':
+                if '#' in text or '"""' in text:
+                    if text.replace('+', '', 1).strip() not in existing_comments:
+                        unique_comments.append(text.replace('+', '', 1).strip())
+        print("unique comments contain...")
+        print(unique_comments)
         self.assertTrue(len(unique_comments) > 0)
 
 """
