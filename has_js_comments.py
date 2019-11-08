@@ -5,10 +5,6 @@ Description:
 - This template creates a Flask app to perform a basic test and return results in a Python dictionary in console
 """
 
-def pl(lines):
-    for l in lines:
-        print(l)
-
 from flask import Flask, request, jsonify
 from io import StringIO
 import json
@@ -149,8 +145,11 @@ def run_tests(fileLocation):
     import __main__
     failed_patch = False
     os.chdir('/tmp')
+
     # git_dir = 'JPMC-tech-task-1-PY3'
+
     random_num = random.randint(100000, 1000000)
+
     # git_url = 'https://github.com/insidesherpa/JPMC-tech-task-1-PY3.git'
     # # Git clone into custom directory and apply patch file
     # new_repo_path = "%s/%s/taskDir" % (os.getcwd(), random_num)

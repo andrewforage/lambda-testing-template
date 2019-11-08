@@ -1,3 +1,17 @@
+"""
+Copy patches to /tmp/ and call POST individually
+
+
+By default, it'll call valid patches in task2 and task3.
+Otherwise, include an argument containing the list of patches to be tested. The argument should have no spaces and be comma separated.
+
+Examples:
+python utils/test_several_patches.py sample_patches/task2/mod2_anish.patch,sample_patches/task2/solution2.patch
+python utils/test_several_patches.py sample_patches/task3/mod3_connor.patch,sample_patches/task3/mod3_azim.patch,sample_patches/task3/mod3_sasilyu.patch,sample_patches/task3/mod3_sebastian.patch
+
+"""
+
+
 import os
 import sys
 

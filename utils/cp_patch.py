@@ -1,7 +1,7 @@
 """
 Copy a file as /tmp/test_file.patch
 
-Example:
+Examples:
 python utils/cp_patch.py sample_patches/task1/py2/mod1_yosh.patch
 python utils/cp_patch.py sample_patches/task1/py3/mod1_calvin.patch
 
