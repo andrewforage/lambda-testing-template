@@ -82,7 +82,10 @@ class TestPatchFile(unittest.TestCase):
                 if len(results)!=0:
                     print(l)
                     num_comments += 1
-                    clean = l.split("//")[1:]
+                    if "//" in l:
+                        clean = l.split("//")[1:]
+                    else:
+                        clean = l.split("/*")[1:]
                     clean = clean[0]
                     clean = clean.strip()
                     existing_comments.append(clean)
