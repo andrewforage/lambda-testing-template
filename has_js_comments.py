@@ -5,6 +5,10 @@ Description:
 - This template creates a Flask app to perform a basic test and return results in a Python dictionary in console
 """
 
+def pl(lines):
+    for l in lines:
+        print(l)
+
 from flask import Flask, request, jsonify
 from io import StringIO
 import json
@@ -42,62 +46,87 @@ class TestPatchFile(unittest.TestCase):
             ## Clean text
             ### Convert to clean strings
             lines = [x.decode("utf-8").strip() for x in lines]
+            ol = lines
+
+            ### Remove +/-
+            lines = [x[1:].strip() if (x.startswith("+") or x.startswith("-")) else x.strip() for x in lines]
+
+            ## Remove everything in between parentheses
+            lines = [x.replace("`", "''") for x in lines]
+
+            splines = [x.split('"') if '"' in x else [x] for x in lines]
+            splines = [[] if x=="" else x for x in splines]
+            lines = [(x[0] + "".join(x[2::2])) if len(x) > 1 else "".join(x) for x in splines]
+
+            splines = [x.split("'") if "'" in x else [x] for x in lines]
+            splines = [[] if x=="" else x for x in splines]
+            lines = [(x[0] + "".join(x[2::2])) if len(x) > 1 else "".join(x) for x in splines]
 
             ### Remove empty lines
             lines = [x for x in lines if x!=""]
+
 
             ## Initialize
             existing_comments = []
             unique_comments = []
             num_comments = 0
 
+            ## Find multiline comments /* *** */
+            ### Single line comments inside multiple line comments are not counted as another comment
+            opens = [i for i in range(len(lines)) if lines[i].startswith("/*")]
+            closes = [i for i in range(len(lines)) if lines[i].endswith("*/")]
+
+            ### Remove stray /* or */
+            rm = [x for x in opens if x > max(closes)]
+            opens = [x for x in opens if x not in rm]
+
+            rm = [x for x in closes if x < min(opens)]
+            closes = [x for x in closes if x not in rm]
+
+
+            ## Find line number of closing comment and take note of multiline comment
+            mls = []
+            for o in opens:
+                close = min([x for x in closes if x > o])
+                multiline = "\n".join(lines[o+1:close])
+                num_comments += 1
+                mls.append((o, close))
+                existing_comments.append(multiline)
+                if multiline not in unique_comments:
+                    unique_comments.append(multiline)
+
+            ## Remove multiline comments from list of lines
+            mls.sort(reverse=True)
+            for ml in mls:
+                h1 = lines[:ml[0]-1]
+                h1.extend(lines[ml[1]+1:])
+                lines = h1
+
             ## Find single line comments
             for l in lines:
-                ## Remove everything in between parentheses
-                ll = l.split('"')
-                without = [ll[0]]
-                without.extend(ll[2::2])
-                l = " ".join(without)
-
-                ll = l.split("''")
-                without = [ll[0]]
-                without.extend(ll[2::2])
-                l = " ".join(without)
-
-
-                ## Find single line comments
-                ## //
+                ## Find single line comments //
                 slc = '^\/\/'
                 results = re.findall(slc, l)
                 if len(results)==0:
                     slc = "[^:]//"
                     results = re.findall(slc, l)
-                ## /*
-                slc = '/\*'
-                r2 = re.findall(slc, l)
-                results.extend(r2)
-
-                ## TODO: Find multiline comments
-
                 if len(results)!=0:
-                    print(l)
                     num_comments += 1
-                    if "//" in l:
-                        clean = l.split("//")[1:]
-                    else:
-                        clean = l.split("/*")[1:]
+                    clean = l.split("//")[1:]
                     clean = clean[0]
                     clean = clean.strip()
                     existing_comments.append(clean)
                     if clean not in unique_comments:
                         unique_comments.append(clean)
 
+            ## Print results
             print("# of comments:" + str(num_comments))
-            print("\n")
-            print("Unique comments:")
-            for c in unique_comments:
-                print(c)
+            # print("\n")
+            # print("Unique comments:")
+            # for c in unique_comments:
+            #     print(c)
 
+            ## Return test results
             test_passed = num_comments > 0
             if test_passed:
                 print("has_js_comments: Passed")

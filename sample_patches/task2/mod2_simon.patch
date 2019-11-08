@@ -283,7 +283,7 @@ index 0728518..b6dfe3a 100755
    data: ServerRespond[],
 +  showGraph: boolean,
  }
- 
+
  /**
 @@ -22,6 +23,7 @@ class App extends Component<{}, IState> {
        // data saves the server responds.
@@ -292,16 +292,16 @@ index 0728518..b6dfe3a 100755
 +      showGraph: false,
      };
    }
- 
+
 @@ -29,7 +31,8 @@ class App extends Component<{}, IState> {
     * Render Graph react component with state.data parse as property data
     */
    renderGraph() {
 -    return (<Graph data={this.state.data}/>)
-+    if (this.state.showGraph) 
++    if (this.state.showGraph)
 +      return (<Graph data={this.state.data}/>)
    }
- 
+
    /**
 @@ -39,7 +42,16 @@ class App extends Component<{}, IState> {
      DataStreamer.getData((serverResponds: ServerRespond[]) => {
@@ -320,7 +320,7 @@ index 0728518..b6dfe3a 100755
 +      }
      });
    }
- 
+
 diff --git a/src/Graph.tsx b/src/Graph.tsx
 index ec1430e..f7e8985 100644
 --- a/src/Graph.tsx
@@ -333,18 +333,18 @@ index ec1430e..f7e8985 100644
 +interface PerspectiveViewerElement extends HTMLElement {
    load: (table: Table) => void,
  }
- 
+
 @@ -32,7 +32,7 @@ class Graph extends Component<IProps, {}> {
- 
+
    componentDidMount() {
      // Get element to attach the table from the DOM.
 -    const elem: PerspectiveViewerElement = document.getElementsByTagName('perspective-viewer')[0] as unknown as PerspectiveViewerElement;
 +    const elem = document.getElementsByTagName('perspective-viewer')[0] as unknown as PerspectiveViewerElement;
- 
+
      const schema = {
        stock: 'string',
 @@ -49,6 +49,16 @@ class Graph extends Component<IProps, {}> {
- 
+
        // Add more Perspective configurations here.
        elem.load(this.table);
 +      elem.setAttribute('view', 'y_line');
@@ -359,7 +359,6 @@ index ec1430e..f7e8985 100644
 +      }`);
      }
    }
- 
--- 
-2.24.0.windows.1
 
+--
+2.24.0.windows.1
