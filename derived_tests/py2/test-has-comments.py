@@ -47,13 +47,40 @@ class TestPatchFile(unittest.TestCase):
                     existing_comments.append(text.replace('-', '', 1).strip())
         #check for new/unique comments
         for text in lines:
-            print (text)
+            print(text)
             if len(text.strip()) and text[0] == '+':
                 if '#' in text or '"""' in text:
                     if text.replace('+', '', 1).strip() not in existing_comments:
                         unique_comments.append(text.replace('+', '', 1).strip())
-        print ("unique comments contain...")
-        print (unique_comments)
+        print("unique comments contain...")
+        print(unique_comments)
+        self.assertTrue(len(unique_comments) > 0)
+    def test_has_js_comments(self):
+        print ("running test_has_comments")
+        output = subprocess.Popen(['cat', '/tmp/test_file.patch'],
+                                  cwd=os.getcwd(),
+                                  stdout=subprocess.PIPE,
+                                  stderr=subprocess.STDOUT)
+        output.wait()
+        buffer = output.stdout
+        lines = buffer.readlines()
+        #find existing comments first
+        existing_comments = []
+        unique_comments = []
+        for text in lines:
+            print (text)
+            if len(text.strip()) and text[0] == '-':
+                if '#' in text or '"""' in text:
+                    existing_comments.append(text.replace('-', '', 1).strip())
+        #check for new/unique comments
+        for text in lines:
+            print(text)
+            if len(text.strip()) and text[0] == '+':
+                if '#' in text or '"""' in text:
+                    if text.replace('+', '', 1).strip() not in existing_comments:
+                        unique_comments.append(text.replace('+', '', 1).strip())
+        print("unique comments contain...")
+        print(unique_comments)
         self.assertTrue(len(unique_comments) > 0)
 
 """
@@ -84,7 +111,7 @@ def run_tests(fileLocation):
     else:
         repo_path = '%s/%s/taskDir/%s' % (os.getcwd(), random_num, git_dir)
         os.chdir(repo_path)
-        
+
 
     # Runs unittest and outputs into buf
     suite = unittest.TestLoader().loadTestsFromModule(sys.modules[__name__])
@@ -105,7 +132,7 @@ def run_tests(fileLocation):
             find_fails = re.compile('FAIL.*')
             all_fails = find_fails.findall(test_output)
             tests_failed = all_fails
-    
+
     # Clean git clone directory
     os.chdir('/tmp')
     pathToDelete = "%s/%s" % (os.getcwd(), random_num)
@@ -130,7 +157,7 @@ def handle_async_marking(deliverable):
 
     # Run tests and store failed results as array
     failed_tests = run_tests(downloadLoc)
-    
+
     # Fire callback to callback URL
     callback = {
         'marked': True,
@@ -143,7 +170,7 @@ def handle_async_marking(deliverable):
 @app.route('/test', methods=['GET', 'POST'])
 def begin_patch_test():
     """
-    LOGIC: 
+    LOGIC:
     1. Receives JSON Post request
     2. Downloads response from S3 (for testing we use file from local machine)
     3. Runs tests below

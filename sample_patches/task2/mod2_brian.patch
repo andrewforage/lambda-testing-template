@@ -286,7 +286,7 @@ index f6b15ff..31f1d1c 100644
 +++ b/src/DataManipulator.ts
 @@ -1,20 +1,36 @@
  import { ServerRespond } from './DataStreamer';
- 
+
  export interface Row {
 -  stock: string,
 -  top_ask_price: number,
@@ -298,8 +298,8 @@ index f6b15ff..31f1d1c 100644
 +  lower_bound: number,
 +  trigger_alert: number | undefined,
  }
- 
- 
+
+
  export class DataManipulator {
 -  static generateRow(serverResponds: ServerRespond[]): Row[] {
 -    return serverResponds.map((el: any) => {
@@ -313,7 +313,7 @@ index f6b15ff..31f1d1c 100644
 +    const ratio = priceABC / priceDEF;
 +    const upperBound = 1 + 0.05;
 +    const lowerBound = 1 - 0.05;
-+    
++
 +    return {
 +
 +	price_abc: priceABC,
@@ -324,10 +324,10 @@ index f6b15ff..31f1d1c 100644
 +        upper_bound: upperBound,
 +        lower_bound: lowerBound,
 +        trigger_alert: (ratio > upperBound || ratio < lowerBound) ? ratio : undefined,
-+        
++
        };
 -    })
-+   
++
    }
  }
 diff --git a/src/Graph.tsx b/src/Graph.tsx
@@ -336,7 +336,7 @@ index 58fb997..2d01a35 100644
 +++ b/src/Graph.tsx
 @@ -23,10 +23,14 @@ class Graph extends Component<IProps, {}> {
      const elem = document.getElementsByTagName('perspective-viewer')[0] as unknown as PerspectiveViewerElement;
- 
+
      const schema = {
 -      stock: 'string',
 -      top_ask_price: 'float',
@@ -347,10 +347,10 @@ index 58fb997..2d01a35 100644
        timestamp: 'date',
 +      upper_bound: 'float',
 +      lower_bound: 'float',
-+      trigger_alert: 'float',		
-+      
++      trigger_alert: 'float',
++
      };
- 
+
      if (window.perspective && window.perspective.worker()) {
 @@ -36,23 +40,25 @@ class Graph extends Component<IProps, {}> {
        // Load the `table` in the `<perspective-viewer>` DOM reference.
@@ -374,7 +374,7 @@ index 58fb997..2d01a35 100644
        }));
      }
    }
- 
+
    componentDidUpdate() {
      if (this.table) {
 -      this.table.update(
@@ -385,6 +385,5 @@ index 58fb997..2d01a35 100644
      }
    }
  }
--- 
+--
 2.17.2 (Apple Git-113)
-

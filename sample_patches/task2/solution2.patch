@@ -18,7 +18,7 @@ index 0728518..b83f979 100755
    data: ServerRespond[],
 +  showGraph: boolean,
  }
- 
+
  /**
 @@ -22,6 +23,7 @@ class App extends Component<{}, IState> {
        // data saves the server responds.
@@ -27,7 +27,7 @@ index 0728518..b83f979 100755
 +      showGraph: false,
      };
    }
- 
+
 @@ -29,18 +31,28 @@ class App extends Component<{}, IState> {
     * Render Graph react component with state.data parse as property data
     */
@@ -37,7 +37,7 @@ index 0728518..b83f979 100755
 +      return (<Graph data={this.state.data}/>)
 +    }
    }
- 
+
    /**
     * Get new data from server and update the state with the new data
     */
@@ -61,7 +61,7 @@ index 0728518..b83f979 100755
 +      }
 +    }, 100);
    }
- 
+
    /**
 diff --git a/src/Graph.tsx b/src/Graph.tsx
 index ec1430e..ddd4d55 100644
@@ -75,16 +75,16 @@ index ec1430e..ddd4d55 100644
 +interface PerspectiveViewerElement extends HTMLElement {
    load: (table: Table) => void,
  }
- 
+
 @@ -31,8 +31,9 @@ class Graph extends Component<IProps, {}> {
    }
- 
+
    componentDidMount() {
 +    console.log('rendering');
      // Get element to attach the table from the DOM.
 -    const elem: PerspectiveViewerElement = document.getElementsByTagName('perspective-viewer')[0] as unknown as PerspectiveViewerElement;
 +    const elem = document.getElementsByTagName('perspective-viewer')[0] as unknown as PerspectiveViewerElement;
- 
+
      const schema = {
        stock: 'string',
 @@ -40,15 +41,20 @@ class Graph extends Component<IProps, {}> {
@@ -99,7 +99,7 @@ index ec1430e..ddd4d55 100644
      if (this.table) {
 +      console.log('change table');
        // Load the `table` in the `<perspective-viewer>` DOM reference.
- 
+
        // Add more Perspective configurations here.
        elem.load(this.table);
 +      elem.setAttribute('view', 'y_line');
@@ -109,7 +109,6 @@ index ec1430e..ddd4d55 100644
 +      elem.setAttribute('aggregates', '{"stock":"distinct count","top_ask_price":"avg","top_bid_price":"avg","timestamp":"distinct count"}');
      }
    }
- 
--- 
-2.17.1
 
+--
+2.17.1

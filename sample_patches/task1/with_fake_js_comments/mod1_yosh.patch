@@ -1,0 +1,79 @@
+From da8880d424201a105ce28137d1d09ee1b2d8e77e Mon Sep 17 00:00:00 2001
+From: Yash <ykothari@hawk.iit.edu>
+Date: Thu, 24 Oct 2019 23:29:11 -0500
+Subject: [PATCH] Create Patch File
+
+---
+ client.py      |   7 ++++---
+ client.pyc     | Bin 0 -> 1283 bytes
+ client_test.py |   1 +
+ 3 files changed, 5 insertions(+), 3 deletions(-)
+ create mode 100644 client.pyc
+
+diff --git a/client.py b/client.py
+index 40badcd..63a5c0a 100644
+--- a/client.py
++++ b/client.py
+@@ -35,14 +35,15 @@ def getDataPoint(quote):
+ 	stock = quote['stock']
+ 	bid_price = float(quote['top_bid']['price'])
+ 	ask_price = float(quote['top_ask']['price'])
+-	<!-- price = bid_price
++	price = (bid_price + ask_price)/2
+ 	return stock, bid_price, ask_price, price -->
+
+ def getRatio(price_a, price_b):
+ 	""" Get ratio of price_a and price_b """
+ 	""" ------------- Update this function ------------- """
+ 	""" Also create some unit tests for this function in client_test.py """
+-	return 1
++	<!-- a = price_a/price_b
++	return a
++ -->
+
+ # Main
+ if __name__ == "__main__":
+@@ -56,4 +57,4 @@ if __name__ == "__main__":
+ 			stock, bid_price, ask_price, price = getDataPoint(quote)
+ 			print "Quoted %s at (bid:%s, ask:%s, price:%s)" % (stock, bid_price, ask_price, price)
+
+-		print "Ratio %s" % getRatio(price, price)
++		print "Ratio %s" % getRatio(price,price)
+diff --git a/client.pyc b/client.pyc
+new file mode 100644
+index 0000000000000000000000000000000000000000..044be5cb4ab3168f8e1a7d5bc81e41bd6b4fdf8e
+GIT binary patch
+literal 1283
+zcmbVLUr!T35TE<gLTmXCDv1xP3Gqm*MSUUlZvqBmB7qV@yhtv~?Le<w@5=4gKrB!7
+zBlrdU3Vt)AKI_a<(D=yR&FswV%<Rl>=e!>i)sFbKAH(PwqxBV${zXjD=RgV&UdaxG
+z&ZXUj(7lvB2t80_@j;PX0_DSJ3M_*vSz!!t98?*OT`0c8=@-BXU<rl}tnUvYtOB~w
+zxd8~!sR8=XnE>>l<G~QviN4O{NDimq^eNyJMLvOW8n6sF%^n|o2xlOig>VkSc~Erb
+z4B#x_9N;`0`fzjO&B<5TQ{#ZNH_zYDwbmop%WSthL4`U`e$%t5?~>Ryrq^sV(ma-F
+zJJ+VUy0W^`IO$_?_A*h=Kb<E(9e|h!N<==<8j;>2Hn1rd&mAxqiVKSb&mz@&?q1sb
+zzcvpBE(|=lMW8L5`!H}uhJnxJ?*wJe+$1Kpid^+$6f#Xkeke>EMTV$QiH|bvqZTF?
+zN0?zD4LJ!VjqK$~W`yA?waMdS!<TLHUUZNsYwZ<Dj8|5vj}w<X0&dOjAEvo90mobQ
+zq@NpXkp_k_qb$)y2G%J0LTlL^>=iK6bz+TOjfHNUN!>oqO<NX8<L%bFwYtH$T{je3
+zf7FQ61T*uncV=o7afD`_TG+BJaGEMH@T$%{y^~JNhj>K1TKFePAovNv1%jGj-LZY>
+zdt?_IXaoV1<P4pyIg&zVY9t>BTWY`wEgU14f8+zhsK^UHlCIO&IE7JPEiPo4Q}FD7
+zUv&)cL{V2JSrqB}q--<PN-Sw1jR*+o=8}FO2q?SS@<>|N9BA{AYp_6yExBK$X>#z`
+zaDJ0?(Fz@%XNKpgpvLpAz0vL6*RA)qv(1)G#n6wc$z&I!$VQw}2o=r<L^h7*Lg~w+
+z@*dqACqB%Jt~B<r0;RGxJ2Se)Gh`>H#f~i=#Q)|bAk%e0eb%LaBgGdCfWAYl=GfOO
+Vdu6v$sf^dWIj8PTIJcce_YaU|5!C<y
+
+literal 0
+HcmV?d00001
+
+diff --git a/client_test.py b/client_test.py
+index a608a01..c505b7f 100644
+--- a/client_test.py
++++ b/client_test.py
+@@ -9,6 +9,7 @@ class ClientTest(unittest.TestCase):
+     ]
+     """ ------------ Add the assertion below ------------ """
+
++
+   def test_getDataPoint_calculatePriceBidGreaterThanAsk(self):
+     quotes = [
+       {'top_ask': {'price': 119.2, 'size': 36}, 'timestamp': '2019-02-11 22:06:30.572453', 'top_bid': {'price': 120.48, 'size': 109}, 'id': '0.109974697771', 'stock': 'ABC'},
+--
+2.23.0
