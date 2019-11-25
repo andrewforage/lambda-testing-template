@@ -58,6 +58,8 @@ def run_tests(fileLocation):
         print (git_output)
         repo_path = '%s/%s/taskDir/%s' % (os.getcwd(), random_num, git_dir)
         os.chdir(repo_path)
+        # DEVELOPER TO-DO: You can comment out the apply patch code below in the try-except block if
+        # your test is only concerned about parsing the patch file
         try:
             output = git.exec_command('apply', '/tmp/test_file.patch', cwd=os.getcwd())
         except Exception as error:
