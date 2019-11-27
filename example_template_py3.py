@@ -24,7 +24,7 @@ lambda_api_key = 'testing'
 ###################################################
 # You should not need to edit any of the code above
 
-# Write your Python unit test here
+# DEVELOPER TO-DO: Write your Python unit test here
 class TestPatchFile(unittest.TestCase):
     def test_general(self):
         print("Running test_general")
@@ -32,17 +32,20 @@ class TestPatchFile(unittest.TestCase):
         self.assertTrue(True)
 
 """
-This will clone the repository: https://github.com/insidesherpa/JPMC-tech-task-1.git
+run_tests method will clone the repository e.g. https://github.com/insidesherpa/JPMC-tech-task-1.git
 into /tmp/<randomNumber>/taskDir and then apply the git patch file located at /tmp/test_file.patch to the git repo.
+if patch is successful, then the unit test(s) in the Test class above will be executed
 """
 def run_tests(fileLocation):
     tests_failed = []
     import __main__
     failed_patch = False
     os.chdir('/tmp')
+    # DEVELOPER TO-DO: Change the git_dir to the appropriate git directory of the task
+    # you're creating test(s) for
     git_dir = 'JPMC-tech-task-1-PY3'
     random_num = random.randint(100000, 1000000)
-    git_url = 'https://github.com/insidesherpa/JPMC-tech-task-1-PY3.git'
+    git_url = 'https://github.com/insidesherpa/{}.git'.format(git_dir)
     # Git clone into custom directory and apply patch file
     new_repo_path = "%s/%s/taskDir" % (os.getcwd(), random_num)
     if not os.path.exists(new_repo_path):
@@ -52,6 +55,8 @@ def run_tests(fileLocation):
         print (git_output)
         repo_path = '%s/%s/taskDir/%s' % (os.getcwd(), random_num, git_dir)
         os.chdir(repo_path)
+        # DEVELOPER TO-DO: You can comment out the apply patch code below in the try-except block if
+        # your test is only concerned about parsing the patch file
         try:
             output = git.exec_command('apply', '/tmp/test_file.patch', cwd=os.getcwd())
         except Exception as error:
@@ -71,16 +76,16 @@ def run_tests(fileLocation):
             print (test_output)
             didnt_run = re.compile("Ran 0 test.*")
             all_tests = didnt_run.findall(test_output)
-        if (failed_patch):
-            tests_failed = ['FAIL. Failed to apply patch']
-        elif (len(all_tests) > 0):
-            tests_failed = all_tests
+            if (len(all_tests) > 0):
+                tests_failed = all_tests
+            else:
+                # Find all fail tests using Regex and return as an array
+                find_fails = re.compile('FAIL.*')
+                all_fails = find_fails.findall(test_output)
+                tests_failed = all_fails
         else:
-            # Find all fail tests using Regex and return as an array
-            find_fails = re.compile('FAIL.*')
-            all_fails = find_fails.findall(test_output)
-            tests_failed = all_fails
-    
+            tests_failed = ['FAIL. Failed to apply patch']
+
     # Clean git clone directory
     os.chdir('/tmp')
     pathToDelete = "%s/%s" % (os.getcwd(), random_num)
@@ -99,13 +104,16 @@ def redirect_stdout(target):
     sys.stdout = original
 
 def handle_async_marking(deliverable):
-    # Place your patch file to test in the downloadLoc path
-    # Assumes / simulates we've already downloaded the file from S3
+    # DEVELOPER TO-DO: Place your patch file to test in the downloadLoc path
+    # This assumes / simulates we've already downloaded the file from S3
     downloadLoc = '/tmp/test_file.patch'
 
-    # Run tests and store failed results as array
-    failed_tests = run_tests(downloadLoc)
-    
+    if os.path.isfile(downloadLoc):
+        # Run tests and store failed results as array
+        failed_tests = run_tests(downloadLoc)
+    else:
+        failed_tests = ['failed downloading patch file']
+
     # Fire callback to callback URL
     callback = {
         'marked': True,
