@@ -4,6 +4,9 @@
 # To store shared functions/constants in the tests you'll be making
 # This is a sample helper class used for pptx tests
 
+DEFAULT_S_WC_MIN = 10
+DEFAULT_S_WC_MAX = 300
+
 DEFAULT_STRAPLINE_MIN = 5
 DEFAULT_STRAPLINE_MAX = 45
 
