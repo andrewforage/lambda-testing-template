@@ -29,22 +29,26 @@ import requests
 def validate_request(request):
     # Check headers
     requestData = request.json
-    if not ('Content-Type' in request.headers
-            and request.headers['Content-Type'] == 'application/json'):
-        return False
+    
+    # DEVELOPER NOTES: This is disabled for local testing...
+    #if not ('Content-Type' in request.headers
+    #        and request.headers['Content-Type'] == 'application/json'):
+    #    return False
 
+    # DEVELOPER  NOTES: This is disabled for local testing...
     # Check correct data was passed
-    if not ('key' in requestData and requestData['key'] == LAMBDA_API_KEY):
-        return False
+    #if not ('key' in requestData and requestData['key'] == LAMBDA_API_KEY):
+    #    return False
 
-    if not ('moduleId' in requestData and 'deliverableId' in requestData
-            and 'userId' in requestData and 'fileUrl' in requestData
-            and 'submissionKey' in requestData and 'skillId' in requestData
-            and 'timeCalled' in requestData):
-        return False
+    # DEVELOPER NOTES: This is disabled for local testing...
+    #if not ('moduleId' in requestData and 'deliverableId' in requestData
+    #        and 'userId' in requestData and 'fileUrl' in requestData
+    #        and 'submissionKey' in requestData and 'skillId' in requestData
+    #        and 'timeCalled' in requestData):
+    #    return False
 
-    if not ('callbackUrl' in requestData):
-        return False
+    #if not ('callbackUrl' in requestData):
+    #    return False
     return True
 
 def mark(deliverable, execTests, ancilliaryInfo):
@@ -58,8 +62,8 @@ def mark(deliverable, execTests, ancilliaryInfo):
         # Run tests and store failed results as array
         testsFailed = execTests(downloadLoc, ancilliaryInfo)
         # Delete file from system after marked
-        # TIP: You can comment this out so you retain the doc in your pc
-        os.remove(downloadLoc)
+        # TIP: This is commented out so you retain the doc in your pc
+        # os.remove(downloadLoc)
     else:
         testsFailed = ['failed downloading file']
 
@@ -68,13 +72,13 @@ def mark(deliverable, execTests, ancilliaryInfo):
         'marked': True,
         'testsFailed': len(testsFailed),
         'testResults': testsFailed,
-        'deliverableId': deliverable['deliverableId'],
-        'autoMarkingTestId': deliverable['autoMarkingTestId'],
-        'userId': deliverable['userId'],
-        'submissionKey': deliverable['submissionKey'],
-        'timeCalled': deliverable['timeCalled'],
-        'skillId': deliverable['skillId'],
-        'moduleId': deliverable['moduleId'],
+        #'deliverableId': deliverable['deliverableId'],
+        #'autoMarkingTestId': deliverable['autoMarkingTestId'],
+        #'userId': deliverable['userId'],
+        #'submissionKey': deliverable['submissionKey'],
+        #'timeCalled': deliverable['timeCalled'],
+        #'skillId': deliverable['skillId'],
+        #'moduleId': deliverable['moduleId'],
         # 'key': LAMBDA_API_KEY,
     }
 
@@ -109,8 +113,7 @@ def begin_test(request, marker):
 
         return jsonify({
             'success': True,
-            'message': ('[start] marking deliverableId: %s' %
-            deliverable['deliverableId'])
+            'message': ('[start] marking deliverable')
         })
 
     return jsonify({'error': 'invalid parameters provided'})
