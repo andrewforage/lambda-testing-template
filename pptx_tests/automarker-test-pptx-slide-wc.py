@@ -18,6 +18,9 @@ app = Flask(__name__)
 # DEVELOPER TO-DO: This is where you will write your test
 # Feel free to override the current test...
 def run_tests(fileLocation, slideWCTestInfo):
+    # DEVELOPER NOTES: This testsFailed array determines if a file passes a test
+    # If it is returned as empty then a file is deemed to have passed the test
+    # Else, the file fails to meet the criteria of the test...
     testsFailed = []
     path = str(fileLocation)
 
